@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, m } from 'motion/react';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { navigate } from '@/app/router';
 import { playSfx } from '@/core/audio/sfx';
@@ -347,7 +347,7 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
 
       <AnimatePresence>
         {toast && (
-          <motion.div
+          <m.div
             key={toast.id}
             className={hud.toast}
             role="status"
@@ -356,7 +356,7 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
             exit={{ opacity: 0, y: -10 }}
           >
             {toast.text}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 

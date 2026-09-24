@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <!--
-      Strict CSP: only our own scripts/styles/fonts; no network calls, no frames, no plugins.
-      'unsafe-inline' for style-src is limited to style *attributes* set by React/animation libs;
-      no inline <script> is ever allowed. Hosting also sends this (plus frame-ancestors) as a header.
+      Strict CSP: only our own scripts/styles/fonts; no inline script or style, no network calls to other origins,
+      no frames or plugins, and Trusted Types so DOM-XSS sinks (innerHTML etc.) are blocked outright.
+      Hosting also sends this (plus frame-ancestors) as a header — see public/_headers and vercel.json.
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; require-trusted-types-for 'script'; trusted-types wonderverse; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'"
     />
     <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

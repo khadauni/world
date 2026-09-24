@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { playSfx } from '@/core/audio/sfx';
 import { speak, stopSpeaking } from '@/core/audio/speech';
@@ -53,7 +53,7 @@ export function Finale({
   return (
     <Modal open={open} label={`${worldTitle} mastered`} dismissable={false} width={560}>
       <div style={{ display: 'grid', gap: 16, justifyItems: 'center', textAlign: 'center' }} data-testid="finale">
-        <motion.div
+        <m.div
           className={styles.medal}
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -62,7 +62,7 @@ export function Finale({
           <span className="emoji" aria-hidden="true">
             {badgeEmoji}
           </span>
-        </motion.div>
+        </m.div>
         <p style={{ color: 'var(--sun-deep)', fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: '0.08em' }}>NEW BADGE</p>
         <h2 style={{ color: 'var(--grape-deep)', fontSize: 'clamp(1.8rem,5vw,2.4rem)' }}>{badgeName}</h2>
         <p className={styles.cert}>

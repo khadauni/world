@@ -11,6 +11,19 @@ test.describe('Wonderverse smoke', () => {
     expect(watch.problems).toEqual([]);
   });
 
+  test('keeps working offline after the first visit (service worker)', async ({ page, context }) => {
+    const watch = watchPage(page);
+    await createExplorer(page, 'Zoe', 9);
+    await page.waitForFunction(async () => !!(await navigator.serviceWorker?.getRegistration()), null, { timeout: 15_000 });
+    await page.reload();
+    await page.waitForFunction(() => !!navigator.serviceWorker?.controller, null, { timeout: 15_000 });
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Hi, Zoe!' })).toBeVisible();
+    await context.setOffline(false);
+    expect(watch.problems.filter((p) => !/net::ERR_INTERNET_DISCONNECTED/.test(p))).toEqual([]);
+  });
+
   for (const worldId of ['solar-system', 'chandrayaan', 'human-heart']) {
     test(`${worldId}: intro → first stop → task → quiz → reward`, async ({ page }, info) => {
       test.slow();

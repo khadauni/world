@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useApp, countStars, type Profile } from '@/core/store';
 import { BANDS, tier } from '@/core/tier';
 import { useReducedMotion } from '@/core/prefs';
@@ -62,7 +62,7 @@ export function Hub({ profile }: { profile: Profile }) {
             const max = w.stopCount * 3;
             const live = w.status === 'live';
             return (
-              <motion.button
+              <m.button
                 key={w.id}
                 type="button"
                 className={`${styles.worldCard} ${live ? '' : styles.soon}`}
@@ -102,7 +102,7 @@ export function Hub({ profile }: { profile: Profile }) {
                     </div>
                   )}
                 </div>
-              </motion.button>
+              </m.button>
             );
           })}
         </div>

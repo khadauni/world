@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, m } from 'motion/react';
 import { useState } from 'react';
 import { BRAND } from '@/config/brand';
 import { AVATARS } from '@/core/avatars';
@@ -134,7 +134,7 @@ function CreateExplorer({ onCancel }: { onCancel: () => void }) {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div
+          <m.div
             key={step}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -260,7 +260,7 @@ function CreateExplorer({ onCancel }: { onCancel: () => void }) {
                 </div>
               </>
             )}
-          </motion.div>
+          </m.div>
         </AnimatePresence>
       </div>
     </main>

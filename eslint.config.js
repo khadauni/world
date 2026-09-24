@@ -34,6 +34,19 @@ export default tseslint.config(
         { property: 'innerHTML', message: 'Do not use innerHTML (XSS). Use textContent / React.' },
         { property: 'outerHTML', message: 'Do not use outerHTML (XSS).' },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'motion/react',
+              importNames: ['motion'],
+              message: "Use `m` from 'motion/react' (the app is wrapped in LazyMotion to keep the bundle small).",
+            },
+            { name: 'framer-motion', message: "Import from 'motion/react' instead." },
+          ],
+        },
+      ],
       'no-restricted-globals': [
         'error',
         { name: 'localStorage', message: 'Use the safe storage wrapper in src/core/storage.ts.' },

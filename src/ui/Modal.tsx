@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
@@ -63,7 +63,7 @@ export function Modal({
   return createPortal(
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           className={styles.backdrop}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -72,7 +72,7 @@ export function Modal({
             if (e.target === e.currentTarget && dismissable) onClose?.();
           }}
         >
-          <motion.div
+          <m.div
             ref={panel}
             role="dialog"
             aria-modal="true"
@@ -90,8 +90,8 @@ export function Modal({
               {label}
             </span>
             {children}
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>,
     document.body,

@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { speak } from '@/core/audio/speech';
 import { Button } from '@/ui/Button';
@@ -47,7 +47,7 @@ export function TaskBanner({
 
   return (
     <div className={styles.bannerWrap}>
-      <motion.div
+      <m.div
         className={styles.banner}
         role="status"
         initial={{ y: -30, opacity: 0 }}
@@ -106,7 +106,7 @@ export function TaskBanner({
             {storyMode ? 'Continue ➜' : 'Skip for now'}
           </Button>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }
@@ -119,7 +119,7 @@ export function TravelBanner({ label, onSkip }: { label: string; onSkip: () => v
   }, []);
   return (
     <div className={styles.bannerWrap}>
-      <motion.div className={styles.banner} role="status" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+      <m.div className={styles.banner} role="status" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
         <span className="emoji" aria-hidden="true" style={{ fontSize: '1.6rem' }}>
           🚀
         </span>
@@ -129,7 +129,7 @@ export function TravelBanner({ label, onSkip }: { label: string; onSkip: () => v
             ⏩
           </Button>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

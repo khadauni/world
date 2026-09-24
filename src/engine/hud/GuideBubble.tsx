@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, m } from 'motion/react';
 import { useEffect, type ReactNode } from 'react';
 import { speak, stopSpeaking, useIsSpeaking } from '@/core/audio/speech';
 import type { GuideCharacter } from '@/core/types';
@@ -68,7 +68,7 @@ export function GuideBubble({
         <Guide look={guide.look} size={compact ? 70 : 96} talking={talking} />
       </div>
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={slide.text}
           className={styles.bubble}
           initial={{ opacity: 0, y: 14, scale: 0.97 }}
@@ -112,7 +112,7 @@ export function GuideBubble({
               )}
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </AnimatePresence>
     </div>
   );

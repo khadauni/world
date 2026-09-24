@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { playSfx } from '@/core/audio/sfx';
 import { speak, stopSpeaking } from '@/core/audio/speech';
@@ -119,7 +119,7 @@ export function QuizModal({
         {fmt(q.prompt, band, name)}
       </h2>
 
-      <motion.div key={shakeKey} className={`${styles.choices} ${status === 'oops' ? styles.shake : ''}`} role="group" aria-label="Answers">
+      <m.div key={shakeKey} className={`${styles.choices} ${status === 'oops' ? styles.shake : ''}`} role="group" aria-label="Answers">
         {q.choices.map((c) => {
           const isAnswer = c.id === q.answerId;
           const missed = misses.includes(c.id);
@@ -150,7 +150,7 @@ export function QuizModal({
             </button>
           );
         })}
-      </motion.div>
+      </m.div>
 
       <div aria-live="polite">
         {status === 'right' && (

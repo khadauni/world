@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useEffect } from 'react';
 import { playSfx } from '@/core/audio/sfx';
 import { speak } from '@/core/audio/speech';
@@ -44,7 +44,7 @@ export function RewardCard({
 
   return (
     <div className={styles.center}>
-      <motion.div
+      <m.div
         className={styles.rewardCard}
         role="dialog"
         aria-label="Stop complete"
@@ -66,7 +66,7 @@ export function RewardCard({
             {nextTitle ? `Next: ${nextTitle}` : 'Continue'} <span aria-hidden="true">➜</span>
           </Button>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }
