@@ -72,8 +72,20 @@
 .p2 {
   width: 70px;
   height: 70px;
-  left: 6%;
-  top: 14%;
+  left: 4%;
+  top: 38%;
   background: radial-gradient(circle at 30% 30%, #fff1b8, #ffc93c 50%, #b76e00 100%);
   box-shadow: 0 0 40px rgb(255 201 60 / 0.4);
+}
+
+@media (max-width: 720px) {
+  .p1 {
+    width: 150px;
+    height: 150px;
+    right: -60px;
+    bottom: -60px;
+  }
+  .p2 {
+    display: none;
+  }
 }

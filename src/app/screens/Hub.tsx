@@ -18,10 +18,15 @@ export function Hub({ profile }: { profile: Profile }) {
   const reduced = useReducedMotion();
   const band = profile.band;
   const earned = WORLDS.filter((w) => progress?.worlds[w.id]?.badgeAt);
+  // "Jump back in" — the most recently played world that still has stops left.
+  const resume = WORLDS.filter((w) => w.status === 'live')
+    .map((w) => ({ w, rec: progress?.worlds[w.id] }))
+    .filter(({ w, rec }) => rec?.lastPlayedAt && Object.keys(rec.stops).length < w.stopCount)
+    .sort((a, b) => (b.rec?.lastPlayedAt ?? 0) - (a.rec?.lastPlayedAt ?? 0))[0];
 
   return (
     <main className={styles.page} data-band={band}>
-      <SkyBackground />
+      <SkyBackground planets={false} />
       <header className={styles.hubHead}>
         <AvatarBadge avatar={profile.avatar} size={72} />
         <div className={styles.hello}>
@@ -50,6 +55,23 @@ export function Hub({ profile }: { profile: Profile }) {
           </Button>
         </div>
       </header>
+
+      {resume && (
+        <Button
+          tone="sun"
+          size="l"
+          icon={resume.w.emoji}
+          className={styles.resume}
+          onPointerEnter={() => preloadWorld(resume.w.id)}
+          onClick={() => navigate({ name: 'world', worldId: resume.w.id })}
+          data-testid="resume-world"
+        >
+          Jump back in: {resume.w.title}
+          <span className={styles.resumeCount} aria-hidden="true">
+            {Object.keys(resume.rec?.stops ?? {}).length}/{resume.w.stopCount}
+          </span>
+        </Button>
+      )}
 
       <section aria-labelledby="worlds-title" style={{ display: 'grid', gap: 16 }}>
         <h2 id="worlds-title" className={styles.h2}>

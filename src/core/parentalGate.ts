@@ -14,7 +14,7 @@ export interface GateChallenge {
  */
 export function makeChallenge(seed: number): GateChallenge {
   const rand = mulberry32(seed);
-  const a = 6 + Math.floor(rand() * 7); // 6–12
+  const a = 11 + Math.floor(rand() * 9); // 11–19
   const b = 3 + Math.floor(rand() * 7); // 3–9
   const answer = a * b;
   const set = new Set<number>([answer]);
@@ -31,6 +31,9 @@ export function makeChallenge(seed: number): GateChallenge {
 }
 
 export function numberWords(n: number): string {
-  const ones = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  const ones = [
+    'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+    'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
+  ];
   return ones[n] ?? String(n);
 }

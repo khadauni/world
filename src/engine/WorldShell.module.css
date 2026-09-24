@@ -2,6 +2,7 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
+  animation: shellIn 0.6s var(--ease-out) both;
   background: radial-gradient(120% 100% at 50% 0%, var(--from) 0%, var(--to) 100%);
   color: var(--ink);
 }
@@ -53,4 +54,13 @@
   font-weight: 700;
   font-size: 0.95rem;
   white-space: nowrap;
+}
+
+@keyframes shellIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
