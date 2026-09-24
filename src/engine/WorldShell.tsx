@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from 'motion/react';
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { navigate } from '@/app/router';
 import { playSfx } from '@/core/audio/sfx';
 import { speak, stopSpeaking } from '@/core/audio/speech';
@@ -33,7 +33,10 @@ const TRAVEL_TIMEOUT_MS = 9000;
  * and layers the HUD (guide, tasks, quizzes, rewards) on top. Worlds only supply content + scene.
  */
 export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module: WorldModule; profile: Profile }) {
-  const { content, canvas, Scene, Overlay } = module;
+  const { content, canvas } = module;
+  // Memoised so HUD-only updates (slides, toasts, task progress) never re-reconcile the 3D scene.
+  const Scene = useMemo(() => memo(module.Scene), [module.Scene]);
+  const Overlay = useMemo(() => (module.Overlay ? memo(module.Overlay) : null), [module.Overlay]);
   const band = profile.band;
   const name = profile.name;
   const quality = useQualityProfile();
