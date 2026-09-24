@@ -19,6 +19,56 @@ export function watchPage(page: Page) {
   return { problems, external };
 }
 
+export type Band = 'tiny' | 'junior' | 'senior';
+
+/**
+ * Skip onboarding: seed local storage with an explorer (and optional finished stops) before the app loads.
+ * `completed` maps worldId → stop ids that should count as done (so later stops are unlocked).
+ */
+export async function seedExplorer(page: Page, opts: { name?: string; band?: Band; avatar?: string; completed?: Record<string, string[]>; badges?: string[] } = {}) {
+  const id = 'p_e2e';
+  const worlds: Record<string, { stops: Record<string, { stars: number; at: number }>; badgeAt?: number }> = {};
+  for (const [worldId, stops] of Object.entries(opts.completed ?? {})) {
+    worlds[worldId] = { stops: Object.fromEntries(stops.map((s) => [s, { stars: 3, at: 1 }])) };
+    if (opts.badges?.includes(worldId)) worlds[worldId].badgeAt = 1;
+  }
+  const state = {
+    v: 1,
+    activeId: id,
+    profiles: [{ id, name: opts.name ?? 'Mia', avatar: opts.avatar ?? 'fox', band: opts.band ?? 'junior', createdAt: 1 }],
+    progress: { [id]: { worlds, playLog: {} } },
+    settings: { sound: false, narration: false, speechRate: 1, quality: 'high', reducedMotion: 'off', breakMinutes: 0 },
+  };
+  await page.addInitScript((json) => {
+    try {
+      window.localStorage.setItem('wonderverse:v1', json);
+    } catch {
+      /* ignore */
+    }
+  }, JSON.stringify(state));
+}
+
+/** Open a world and advance to the map (past the intro). */
+export async function openWorldMap(page: Page, worldId: string) {
+  await page.goto(`./#/world/${worldId}`);
+  const shell = page.getByTestId('world-shell');
+  await expect(shell).toBeVisible({ timeout: 30_000 });
+  for (let i = 0; i < 15 && (await shell.getAttribute('data-phase')) === 'intro'; i++) await page.getByTestId('guide-next').click();
+  await expect(shell).toHaveAttribute('data-phase', 'map');
+}
+
+/** From the map, fly to a stop and wait for the explore phase. */
+export async function visitStop(page: Page, stopId: string) {
+  await page.getByTestId(`stop-${stopId}`).click();
+  await expect(page.getByTestId('world-shell')).toHaveAttribute('data-phase', 'explore', { timeout: 20_000 });
+}
+
+/** Click through narration/facts until the task (or quiz) starts. */
+export async function finishExplore(page: Page) {
+  const shell = page.getByTestId('world-shell');
+  for (let i = 0; i < 25 && (await shell.getAttribute('data-phase')) === 'explore'; i++) await page.getByTestId('guide-next').click();
+}
+
 export async function createExplorer(page: Page, name = 'Aarav', age = 7) {
   await page.goto('./');
   await page.getByTestId('start-button').click();

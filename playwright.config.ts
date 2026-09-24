@@ -2,6 +2,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || (process.env.CI ? undefined : '/opt/pw-browsers/chromium');
 
+// Point at an already-running server (e.g. `npx vite --port 5301`) with PW_BASE_URL; otherwise build+preview is used.
+const externalBase = process.env.PW_BASE_URL;
+
 export default defineConfig({
   testDir: './e2e',
   timeout: 90_000,
@@ -10,7 +13,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: externalBase ?? 'http://localhost:4173',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     launchOptions: {
@@ -23,10 +26,12 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } } },
     { name: 'tablet', use: { ...devices['iPad Mini'], browserName: 'chromium' } },
   ],
-  webServer: {
-    command: 'npm run preview',
-    url: 'http://localhost:4173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
-  },
+  webServer: externalBase
+    ? undefined
+    : {
+        command: 'npm run preview',
+        url: 'http://localhost:4173',
+        reuseExistingServer: !process.env.CI,
+        timeout: 60_000,
+      },
 });
