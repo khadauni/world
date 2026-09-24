@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Strict CSP: only our own scripts/styles/fonts; no network calls, no frames, no plugins.
+      'unsafe-inline' for style-src is limited to style *attributes* set by React/animation libs;
+      no inline <script> is ever allowed. Hosting also sends this (plus frame-ancestors) as a header.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; media-src 'self' blob: data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0f2e" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Wonderverse — step inside immersive 3D learning worlds made for kids aged 3 to 12. Explore space, fly to the Moon with Chandrayaan, and journey inside the human heart." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>Wonderverse — 3D learning worlds for kids</title>
+  </head>
+  <body>
+    <noscript>Wonderverse needs JavaScript to open its 3D worlds.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

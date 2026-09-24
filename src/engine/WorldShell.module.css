@@ -1,0 +1,56 @@
+.shell {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 100% at 50% 0%, var(--from) 0%, var(--to) 100%);
+  color: var(--ink);
+}
+.stage {
+  position: absolute;
+  inset: 0;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.story {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.storyOrb {
+  width: min(62vmin, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: min(30vmin, 240px);
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.9), var(--accent) 50%, color-mix(in srgb, var(--accent) 40%, #000) 100%);
+  box-shadow: 0 0 120px color-mix(in srgb, var(--accent) 60%, transparent);
+  animation: float 5s ease-in-out infinite;
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+}
+.storyNote {
+  position: absolute;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.35);
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}

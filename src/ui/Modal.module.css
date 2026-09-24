@@ -1,0 +1,27 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: max(16px, var(--safe-top)) max(16px, var(--safe-right)) max(16px, var(--safe-bottom)) max(16px, var(--safe-left));
+  background: rgb(8 10 36 / 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.panel {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  border-radius: var(--radius-xl);
+  background: var(--paper);
+  color: var(--paper-ink);
+  box-shadow: var(--shadow-pop), inset 0 -8px 0 #e3e6fb;
+  padding: clamp(20px, 4vw, 36px);
+}
+.close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}

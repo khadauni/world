@@ -1,0 +1,78 @@
+.guide {
+  display: block;
+  overflow: visible;
+  animation: bob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.35));
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+.eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 4.6s infinite;
+}
+@keyframes blink {
+  0%,
+  46%,
+  50%,
+  100% {
+    transform: scaleY(1);
+  }
+  48% {
+    transform: scaleY(0.1);
+  }
+}
+.mouth {
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+.talking .mouth {
+  animation: talk 0.26s ease-in-out infinite alternate;
+}
+@keyframes talk {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1.15);
+  }
+}
+.antenna {
+  animation: glow 1.6s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.wave {
+  transform-box: fill-box;
+  transform-origin: 20% 90%;
+  animation: wave 2.8s ease-in-out infinite;
+}
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0);
+  }
+  70% {
+    transform: rotate(-18deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  90% {
+    transform: rotate(-12deg);
+  }
+}

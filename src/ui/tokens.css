@@ -1,0 +1,65 @@
+/* Wonderverse design tokens — chunky, bright, soft. Every colour pair used for text meets WCAG AA. */
+:root {
+  --font-display: 'Fredoka Variable', 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  --font-body: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Night-sky shell */
+  --bg-0: #0b0f2e;
+  --bg-1: #151a45;
+  --bg-2: #232a66;
+  --ink: #ffffff;
+  --ink-soft: #d6dbff;
+  --ink-mute: #a6aee6;
+
+  /* Paper surfaces (panels, bubbles) */
+  --paper: #ffffff;
+  --paper-2: #f4f5ff;
+  --paper-ink: #1d2150;
+  --paper-ink-soft: #4a5087;
+
+  /* Candy palette */
+  --sun: #ffc93c;
+  --sun-deep: #e8a200;
+  --coral: #ff6b6b;
+  --coral-deep: #d94646;
+  --sky: #4cc9f0;
+  --sky-deep: #1d9bc4;
+  --grape: #7b61ff;
+  --grape-deep: #5a3fe0;
+  --mint: #2ec4b6;
+  --mint-deep: #169a8e;
+  --bubblegum: #ff8fab;
+  --leaf: #58cc02;
+  --leaf-deep: #3f9a00;
+
+  --good: #2fbf71;
+  --good-deep: #1f9656;
+  --oops: #ff9f43;
+
+  --radius-s: 12px;
+  --radius-m: 20px;
+  --radius-l: 28px;
+  --radius-xl: 40px;
+
+  --shadow-soft: 0 10px 30px rgb(5 8 40 / 0.35);
+  --shadow-pop: 0 18px 50px rgb(5 8 40 / 0.5);
+  --glow-sun: 0 0 40px rgb(255 201 60 / 0.55);
+
+  --focus: 0 0 0 4px #fff, 0 0 0 8px var(--grape);
+
+  --tap-min: 48px;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  color-scheme: dark;
+}
+
+/* Little explorers get even bigger targets. */
+[data-band='tiny'] {
+  --tap-min: 64px;
+}

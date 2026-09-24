@@ -1,0 +1,12 @@
+{
+  "name": "Wonderverse",
+  "short_name": "Wonderverse",
+  "description": "Immersive 3D learning worlds for kids aged 3–12.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0b0f2e",
+  "theme_color": "#0b0f2e",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

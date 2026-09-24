@@ -1,0 +1,18 @@
+.label {
+  pointer-events: none;
+  transform: translate3d(-50%, -130%, 0);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  color: var(--paper-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.3);
+  border: 2px solid var(--accent, #7b61ff);
+}
+.tappable {
+  pointer-events: auto;
+  cursor: pointer;
+}
