@@ -36,7 +36,7 @@ export const uranus: WorldStop = {
     instruction: {
       tiny: 'Tap the button to roll Uranus over! 🔄',
       junior: 'Tap “Tilt it!” to tip Uranus onto its side!',
-      senior: 'Tilt Uranus to exactly 98° with the controls.',
+      senior: 'Use the controls to tilt Uranus to 98° — its real tilt.',
     },
     hint: {
       tiny: 'Tap the big button! 👇',

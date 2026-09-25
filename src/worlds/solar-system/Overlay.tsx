@@ -10,7 +10,7 @@ const TOO_FAR: Tiered<string> = { tiny: 'Whoa, too far! 😄', junior: 'Too far 
 const DONE: Tiered<string> = {
   tiny: 'Uranus is on its side! Roll, roll! 🎉',
   junior: 'You did it! Uranus rolls around the Sun on its side.',
-  senior: 'Exactly 98° — Uranus orbits the Sun lying on its side.',
+  senior: '98° — spot on! Uranus orbits the Sun lying on its side.',
 };
 
 /** DOM layer: 3D name tags, plus controls for tasks that are easier with buttons (the Uranus "Tilt it!" mission). */

@@ -18,7 +18,7 @@ const UP = new Vector3(0, 1, 0);
 const at = new Vector3();
 
 const VOLCANO_LINE = {
-  tiny: 'A volcano! Look, it’s hot lava! 🌋',
+  tiny: 'Peekaboo! A volcano! 🌋',
   junior: 'A volcano! Venus has more volcanoes than any other planet.',
   senior: 'Revealed: a giant shield volcano, like Maat Mons — Venus has more volcanoes than any other planet.',
 } as const;

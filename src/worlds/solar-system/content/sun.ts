@@ -19,7 +19,7 @@ export const sun: WorldStop = {
     ],
   },
   facts: {
-    tiny: ['The Sun is a star! ⭐', 'Never look right at the Sun! 😎'],
+    tiny: ['The Sun is a star! ⭐', 'Never look right at the Sun! 🙈'],
     junior: [
       'About 109 Earths could line up across the Sun!',
       'Sunlight takes about 8 minutes to reach Earth.',

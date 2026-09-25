@@ -127,7 +127,7 @@ export const mercury: WorldStop = {
       explain: {
         tiny: 'None!',
         junior: 'None! Mercury has no moons.',
-        senior: 'None. Only Mercury and Venus have no moons at all.',
+        senior: 'None. Mercury and Venus are the only planets with no moons at all.',
       },
     },
   ],

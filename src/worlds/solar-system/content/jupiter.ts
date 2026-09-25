@@ -39,7 +39,7 @@ export const jupiter: WorldStop = {
       senior: 'Find the 4 Galilean moons in order from Jupiter: Io, Europa, Ganymede, Callisto.',
     },
     hint: {
-      tiny: 'It looks like a big red eye! 👁️',
+      tiny: 'Look for the big red oval! 🔴',
       junior: 'The moons are the little balls going around Jupiter.',
       senior: 'Io is the closest (yellow and volcanic); Callisto is the farthest (dark and covered in craters).',
     },
@@ -136,7 +136,7 @@ export const jupiter: WorldStop = {
       explain: {
         tiny: 'Lots and lots!',
         junior: 'More than 1,300 Earths!',
-        senior: 'More than 1,300 by volume. About 11 Earths would line up across Jupiter — and around a million would fit inside the Sun.',
+        senior: 'More than 1,300 by volume. About 11 Earths would line up across Jupiter — and about 1.3 million Earths would fit inside the Sun.',
       },
     },
   ],

@@ -19,7 +19,7 @@ export const earth: WorldStop = {
     ],
   },
   facts: {
-    tiny: ['Earth is the only planet with living things! 🐶🌳', 'The Moon goes round and round Earth. 🌙'],
+    tiny: ['Earth is the only place we know with living things! 🐶🌳', 'The Moon goes round and round Earth. 🌙'],
     junior: [
       'About 71% of Earth is covered in water.',
       'Earth is the only planet we know of with life.',

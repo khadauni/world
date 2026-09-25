@@ -14,7 +14,7 @@ export const mars: WorldStop = {
     ],
     senior: [
       'Mars looks red because its dusty soil is rich in iron oxide — rust.',
-      'It has the tallest volcano in the Solar System, Olympus Mons: about 22 km high, roughly 2.5 times the height of Mount Everest.',
+      'It has the tallest known volcano in the Solar System, Olympus Mons: about 22 km high, roughly 2.5 times the height of Mount Everest.',
       'Dried-up river valleys show that liquid water once flowed here, so rovers search the rocks for signs of ancient life.',
     ],
   },

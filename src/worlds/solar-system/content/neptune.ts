@@ -10,7 +10,7 @@ export const neptune: WorldStop = {
     junior: [
       'Neptune is the farthest planet from the Sun.',
       'It has the fastest winds in the Solar System — far faster than any storm on Earth!',
-      'Neptune is a deep blue ice giant, and it is very dark and cold out here.',
+      'Neptune is a blue ice giant, and it is very dark and cold out here.',
     ],
     senior: [
       'Neptune is the eighth and farthest planet — about 30 times farther from the Sun than Earth is.',
@@ -51,7 +51,7 @@ export const neptune: WorldStop = {
         { id: 'yellow', label: 'Yellow', emoji: '🟡', color: '#FFD23F' },
       ],
       answerId: 'blue',
-      explain: { tiny: 'Neptune is blue! 💙', junior: 'Neptune is a deep blue.', senior: 'Deep blue, from methane in its atmosphere.' },
+      explain: { tiny: 'Neptune is blue! 💙', junior: 'Neptune is blue!', senior: 'Blue: methane in its atmosphere absorbs red light.' },
     },
     {
       id: 'ss-neptune-windy',

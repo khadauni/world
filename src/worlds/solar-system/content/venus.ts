@@ -9,7 +9,7 @@ export const venus: WorldStop = {
     tiny: ['Say hello to Venus! 👋', 'Venus is the hottest planet. Phew! 🥵', 'Thick yellow clouds cover it up. ☁️'],
     junior: [
       'This is Venus — the hottest planet of all!',
-      'Thick clouds trap the heat like a giant, fluffy blanket.',
+      'Its thick, heavy air traps the heat like a giant blanket.',
       'Venus is almost the same size as Earth, so people call it Earth’s twin.',
     ],
     senior: [
@@ -76,7 +76,7 @@ export const venus: WorldStop = {
       answerId: 'venus',
       explain: {
         tiny: 'Venus!',
-        junior: 'Venus! Mercury is closer to the Sun, but Venus’s thick clouds trap the heat.',
+        junior: 'Venus! Mercury is closer to the Sun, but Venus’s thick air traps the heat.',
         senior: 'Venus, at about 465 °C. Mercury is closer to the Sun, but Venus’s thick CO₂ atmosphere traps heat day and night.',
       },
     },
@@ -124,7 +124,7 @@ export const venus: WorldStop = {
       ],
       answerId: 'greenhouse',
       explain: {
-        tiny: 'Its clouds keep it hot!',
+        tiny: 'Its thick air keeps it hot!',
         junior: 'Its thick air traps heat like a blanket.',
         senior: 'A runaway greenhouse effect: sunlight warms the ground, and the thick carbon dioxide atmosphere stops that heat escaping.',
       },
