@@ -1,0 +1,436 @@
+/* Task controls for the Chandrayaan world. Bottom-centred, chunky, clay-like — matching the platform buttons. */
+
+.dock {
+  position: absolute;
+  left: 50%;
+  bottom: max(18px, var(--safe-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 18px;
+  width: min(96vw, 900px);
+  pointer-events: none;
+}
+.dock > * {
+  pointer-events: auto;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ---------- pre-launch checklist ---------- */
+.checks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  min-width: 104px;
+  min-height: 92px;
+  padding: 10px 12px 8px;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: rgb(255 255 255 / 0.95);
+  color: var(--paper-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #cfd4f5, 0 12px 26px rgb(0 0 0 / 0.3);
+  transition: transform 0.15s var(--ease-bounce), box-shadow 0.2s, background 0.2s;
+}
+.check:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+.check:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #cfd4f5, 0 6px 14px rgb(0 0 0 / 0.3);
+}
+.check:focus-visible {
+  outline: none;
+  box-shadow: 0 6px 0 #cfd4f5, var(--focus);
+}
+.checkEmoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+.checkDone {
+  background: #dcf8e8;
+  box-shadow: 0 6px 0 var(--good-deep), 0 12px 26px rgb(0 0 0 / 0.3);
+  cursor: default;
+}
+.checkDone::after {
+  content: '✓';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--good);
+  color: #fff;
+  font-size: 1.1rem;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.3);
+  animation: pop 0.35s var(--ease-bounce);
+}
+.orderTag {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--grape);
+  color: #fff;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.3);
+}
+.assist {
+  animation: glow 0.9s ease-in-out infinite alternate;
+}
+.wiggle {
+  animation: wiggle 0.45s ease-in-out;
+}
+
+/* ---------- big round action buttons (LAUNCH / BOOST / THRUST / HOP) ---------- */
+.big {
+  --c: #ff9933;
+  --c-deep: #d9731a;
+  --size: 132px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, rgb(255 255 255 / 0.55), transparent 42%), var(--c);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 0.2);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  box-shadow: 0 8px 0 var(--c-deep), 0 18px 36px rgb(0 0 0 / 0.4);
+  transition: transform 0.12s var(--ease-bounce), box-shadow 0.12s, filter 0.2s;
+}
+[data-band='tiny'] .big {
+  --size: 156px;
+  font-size: 1.3rem;
+}
+.big:focus-visible {
+  outline: none;
+  box-shadow: 0 8px 0 var(--c-deep), var(--focus);
+}
+.big:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.85) brightness(0.8);
+  opacity: 0.75;
+}
+.bigPressed {
+  transform: translateY(6px) scale(0.97);
+  box-shadow: 0 2px 0 var(--c-deep), 0 8px 18px rgb(0 0 0 / 0.35);
+}
+.bigInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  line-height: 1.05;
+  text-align: center;
+  pointer-events: none;
+}
+.bigEmoji {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+.ring {
+  position: absolute;
+  inset: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.ringTrack {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.25);
+  stroke-width: 8;
+}
+.ringFill {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 8;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgb(255 214 120 / 0.9));
+}
+.ready {
+  animation: breathe 1.3s ease-in-out infinite;
+}
+.now {
+  --c: #2fbf71;
+  --c-deep: #1f9656;
+  animation: nowPulse 0.5s ease-in-out infinite alternate;
+}
+.nowTag {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--good-deep);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.3);
+  animation: pop 0.25s var(--ease-bounce);
+  pointer-events: none;
+}
+.hint {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgb(10 12 40 / 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---------- countdown ---------- */
+.countdown {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(5rem, 18vw, 10rem);
+  color: #fff;
+  text-shadow:
+    0 6px 0 #d9731a,
+    0 0 40px rgb(255 153 51 / 0.8);
+  pointer-events: none;
+  animation: countPop 0.9s var(--ease-out) both;
+}
+.liftoff {
+  font-size: clamp(3rem, 10vw, 6rem);
+  white-space: nowrap;
+}
+
+/* ---------- landing gauges ---------- */
+.gauges {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 12px 14px;
+  border-radius: var(--radius-m);
+  background: rgb(10 12 40 / 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  color: #fff;
+  font-family: var(--font-display);
+}
+.gauge {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-width: 64px;
+}
+.gaugeLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.gaugeValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bar {
+  position: relative;
+  width: 22px;
+  height: 96px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  overflow: hidden;
+}
+.barFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  border-radius: 999px;
+  background: linear-gradient(to top, var(--sky), #9be7ff);
+}
+.barLimit {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  height: 3px;
+  background: var(--coral);
+  box-shadow: 0 0 6px var(--coral);
+}
+.speedDial {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.speedFace {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+/* ---------- hop gauge ---------- */
+.hopGauge {
+  position: relative;
+  width: min(80vw, 420px);
+  height: 34px;
+  border-radius: 999px;
+  background: rgb(10 12 40 / 0.62);
+  border: 2px solid rgb(255 255 255 / 0.3);
+  overflow: hidden;
+}
+.hopWindow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgb(47 191 113 / 0.75);
+}
+.hopNeedle {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 6px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 0 0 10px #fff;
+}
+.hopTicks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: rgb(255 255 255 / 0.75);
+  pointer-events: none;
+}
+.small {
+  --c: #6c7bff;
+  --c-deep: #4a57d6;
+  --size: 96px;
+  font-size: 0.95rem;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.3);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes glow {
+  from {
+    box-shadow: 0 6px 0 #e8a200, 0 0 0 4px var(--sun);
+  }
+  to {
+    box-shadow: 0 6px 0 #e8a200, 0 0 0 4px var(--sun), 0 0 30px rgb(255 201 60 / 0.95);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px) rotate(-3deg);
+  }
+  75% {
+    transform: translateX(8px) rotate(3deg);
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes nowPulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+@keyframes countPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ready,
+  .now,
+  .assist,
+  .wiggle,
+  .countdown {
+    animation: none;
+  }
+}
+@media (max-width: 560px) {
+  .check {
+    min-width: 84px;
+    min-height: 80px;
+    font-size: 0.9rem;
+  }
+  .big {
+    --size: 118px;
+  }
+}

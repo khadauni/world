@@ -1,0 +1,373 @@
+/* Inside the Human Heart — DOM layer: 3D name tags + chunky, clay-like task controls. */
+
+/* ---------- name tags ---------- */
+.labelLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.anchor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.tag {
+  --accent: #ff5a7a;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -100%) scale(0.6);
+  opacity: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.94);
+  color: var(--paper-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.15;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgb(40 0 20 / 0.35), inset 0 -3px 0 color-mix(in srgb, var(--accent) 22%, #fff);
+  border: 2.5px solid var(--accent);
+  transition: opacity 0.25s var(--ease-out), transform 0.35s var(--ease-bounce);
+}
+.tagOn {
+  opacity: 1;
+  transform: translate(-50%, -100%) scale(1);
+}
+.below {
+  transform: translate(-50%, 0) scale(0.6);
+}
+.below.tagOn {
+  transform: translate(-50%, 0) scale(1);
+}
+.left {
+  transform: translate(-100%, -50%) scale(0.6);
+  transform-origin: right center;
+}
+.left.tagOn {
+  transform: translate(-100%, -50%) scale(1);
+}
+.right {
+  transform: translate(0, -50%) scale(0.6);
+  transform-origin: left center;
+}
+.right.tagOn {
+  transform: translate(0, -50%) scale(1);
+}
+.tagEmoji {
+  font-size: 1.1em;
+  line-height: 1;
+}
+[data-band='tiny'] .tag {
+  font-size: 17px;
+}
+
+/* ---------- task controls ---------- */
+.controls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---------- task dock (bottom centre) ---------- */
+.dock {
+  position: absolute;
+  left: 50%;
+  bottom: max(16px, var(--safe-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(96vw, 920px);
+  pointer-events: none;
+}
+.dock > * {
+  pointer-events: auto;
+}
+.dockPassive > * {
+  pointer-events: none;
+}
+
+.promptCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(94vw, 640px);
+  padding: 10px 18px 11px 12px;
+  border-radius: var(--radius-m);
+  background: rgb(255 255 255 / 0.96);
+  color: var(--paper-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  line-height: 1.25;
+  box-shadow: 0 6px 0 #f1c9d6, 0 14px 30px rgb(40 0 20 / 0.35);
+  animation: popIn 0.45s var(--ease-bounce) both;
+}
+.promptIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent, #ff5a7a);
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: inset 0 -4px 0 rgb(0 0 0 / 0.15);
+}
+.promptMeta {
+  display: block;
+  font-size: 0.8em;
+  color: var(--paper-ink-soft);
+  font-weight: 600;
+}
+
+/* ---------- heartbeat drum ---------- */
+.drumRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  /* Room below for the approach ring, which starts ~1.35× the drum's size. */
+  margin-bottom: 28px;
+}
+.drum {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 124px;
+  height: 124px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  background: radial-gradient(circle at 35% 30%, #ff9ab0 0%, #ff4d6d 45%, #c21f47 100%);
+  box-shadow: 0 9px 0 #8f1233, 0 18px 34px rgb(60 0 20 / 0.45), inset 0 -6px 0 rgb(0 0 0 / 0.12);
+  transition: box-shadow 0.12s, translate 0.12s var(--ease-bounce);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-band='tiny'] .drum {
+  width: 150px;
+  height: 150px;
+}
+.drum:active {
+  translate: 0 6px;
+  box-shadow: 0 3px 0 #8f1233, 0 8px 18px rgb(60 0 20 / 0.45), inset 0 -3px 0 rgb(0 0 0 / 0.12);
+}
+.drum:focus-visible {
+  outline: none;
+  box-shadow: 0 9px 0 #8f1233, var(--focus);
+}
+.drumEmoji {
+  font-size: 2.6rem;
+  line-height: 1;
+  display: block;
+  will-change: transform;
+}
+.drumLabel {
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 0.2);
+}
+.drumRing {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 5px solid #fff4b0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.feedback {
+  min-width: 118px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+  background: rgb(255 255 255 / 0.95);
+  color: var(--paper-ink);
+  box-shadow: 0 5px 0 #f1c9d6, 0 10px 20px rgb(40 0 20 / 0.3);
+  animation: popIn 0.35s var(--ease-bounce) both;
+}
+.feedbackGood {
+  background: #dcf8e8;
+  color: #0f6b3a;
+  box-shadow: 0 5px 0 var(--good-deep), 0 10px 20px rgb(40 0 20 / 0.3);
+}
+
+/* ---------- lab tray ---------- */
+.tray {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: min(96vw, 920px);
+  padding: 10px 12px;
+  border-radius: var(--radius-l);
+  background: rgb(58 11 38 / 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgb(255 255 255 / 0.16);
+}
+.trayTitle {
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #ffe3ec;
+  margin-bottom: -2px;
+}
+.chip {
+  --accent: #ff5a7a;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 6px 14px 6px 8px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #fff;
+  color: var(--paper-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 55%, #fff), 0 10px 22px rgb(40 0 20 / 0.3);
+  transition: transform 0.15s var(--ease-bounce), box-shadow 0.2s, opacity 0.2s;
+  animation: popIn 0.4s var(--ease-bounce) both;
+  touch-action: manipulation;
+}
+[data-band='tiny'] .chip {
+  min-height: 64px;
+  font-size: 1.1rem;
+}
+.chip:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+.chip:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 55%, #fff), 0 5px 12px rgb(40 0 20 / 0.3);
+}
+.chip:focus-visible {
+  outline: none;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 55%, #fff), var(--focus);
+}
+.chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.chipDot {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent);
+  font-size: 1.2rem;
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.18);
+}
+.chipGlow {
+  animation: glowPulse 1s ease-in-out infinite;
+}
+.chipWiggle {
+  animation: wiggle 0.45s ease-in-out;
+}
+
+/* Many parts to put back (seniors): smaller chips so the tray stays two rows and the model stays big. */
+.trayCompact {
+  gap: 8px;
+  padding: 8px 10px;
+}
+.trayCompact .chip {
+  min-height: 42px;
+  padding: 4px 12px 4px 6px;
+  font-size: 0.92rem;
+  gap: 6px;
+}
+.trayCompact .chipDot {
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+}
+
+/* ---------- ride status ---------- */
+.place {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgb(58 11 38 / 0.6);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+.placeDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent, #ff3450);
+  box-shadow: 0 0 10px var(--accent, #ff3450);
+}
+
+/* Transform only (no opacity): if a busy device delays the animation, the control is still visible. */
+@keyframes popIn {
+  from {
+    transform: translateY(10px) scale(0.86);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 55%, #fff), 0 0 0 0 rgb(255 244 176 / 0.9);
+  }
+  50% {
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 55%, #fff), 0 0 0 10px rgb(255 244 176 / 0);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -6deg;
+  }
+  75% {
+    rotate: 6deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .promptCard,
+  .chip,
+  .feedback {
+    animation: none;
+  }
+  .chipGlow {
+    animation: none;
+    outline: 4px solid #fff4b0;
+  }
+}
