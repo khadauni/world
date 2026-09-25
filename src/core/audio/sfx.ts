@@ -38,6 +38,19 @@ export function setSfxEnabled(on: boolean): void {
   enabled = on;
 }
 
+export function isSfxEnabled(): boolean {
+  return enabled;
+}
+
+/**
+ * Shared AudioContext + master bus for continuous sounds (engine hum, ambience) built elsewhere.
+ * Returns null when sound is off or audio is unavailable. Nodes connected to `out` go through the same
+ * gentle compressor and master volume as the UI sounds.
+ */
+export function getAudioBus(): { ctx: AudioContext; out: GainNode } | null {
+  return audio();
+}
+
 interface ToneOpts {
   freq: number;
   to?: number;

@@ -182,6 +182,7 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
       phase: flow.phase,
       stopId: flow.stopId,
       task: flow.phase === 'task' ? (stop?.task ?? null) : null,
+      beat: null,
       completedStops: completedList,
       explorer: { name, avatar: profile.avatar },
       actions,

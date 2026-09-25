@@ -48,15 +48,42 @@ export interface StopTask {
   readonly params?: Readonly<Record<string, unknown>>;
 }
 
+/**
+ * One scene of a guided tour — a short, cinematic "show, then tell" moment.
+ * The shell plays beats in order (narrated, captioned, auto-advancing, pausable); the world's Scene reads
+ * `beat.shot` and stages the matching camera move, highlight or animated demonstration.
+ */
+export interface TourBeat {
+  /** Unique within its tour. */
+  readonly id: string;
+  /** World-defined visual id the Scene interprets, e.g. 'saturn-rings-closeup' or 'heart-valves-slowmo'. */
+  readonly shot: string;
+  /** Narration: spoken aloud and shown as the caption. Keep it to one idea. */
+  readonly say: Tiered<string>;
+  /** Optional short on-screen headline for the beat (e.g. "Rings of ice"). */
+  readonly title?: Tiered<string>;
+  /** Optional big-number callout, e.g. { value: '1,300', label: 'Earths could fit inside Jupiter' }. */
+  readonly stat?: { readonly value: Tiered<string>; readonly label: Tiered<string> };
+  /** Limit the beat to some bands (e.g. a senior-only deep dive). Default: all bands. */
+  readonly bands?: readonly AgeBand[];
+  /** Minimum time on screen in ms (lets a camera move or animation finish). */
+  readonly hold?: number;
+}
+
 export interface WorldStop {
   readonly id: string;
   readonly title: Tiered<string>;
   readonly emoji: string;
   /** Accent colour for chips, rings and highlights (hex). */
   readonly color: string;
-  /** Lines the guide says on arrival — one bubble per line. */
+  /**
+   * The guided tour played on arrival (show, then tell). When absent, the shell builds a simple tour from
+   * `narration` + `facts` with shots 'narration-N' / 'fact-N'.
+   */
+  readonly tour?: readonly TourBeat[];
+  /** Lines the guide says on arrival — used as a fallback tour, and as a summary. */
   readonly narration: Tiered<readonly string[]>;
-  /** "Did you know?" fact cards shown after the narration. */
+  /** "Did you know?" facts — used by the fallback tour. */
   readonly facts: Tiered<readonly string[]>;
   readonly task?: StopTask;
   readonly quiz: readonly QuizQuestion[];
@@ -81,6 +108,8 @@ export interface WorldContent {
   readonly id: string;
   readonly guide: GuideCharacter;
   readonly intro: Tiered<readonly string[]>;
+  /** Optional cinematic world intro (e.g. a launch sequence) played instead of the plain intro lines. */
+  readonly introTour?: readonly TourBeat[];
   readonly stops: readonly WorldStop[];
   readonly outro: Tiered<readonly string[]>;
   readonly badge: WorldBadge;
@@ -136,6 +165,15 @@ export interface WorldActions {
   say(text: Tiered<string>): void;
 }
 
+export interface ActiveBeat {
+  readonly id: string;
+  readonly shot: string;
+  readonly index: number;
+  readonly total: number;
+  /** False while the child has paused the tour. */
+  readonly playing: boolean;
+}
+
 export interface WorldRuntimeProps {
   readonly band: AgeBand;
   readonly quality: QualityProfile;
@@ -145,6 +183,11 @@ export interface WorldRuntimeProps {
   readonly stopId: string | null;
   /** The active task while phase === 'task'. */
   readonly task: StopTask | null;
+  /**
+   * The tour beat on screen: non-null during the intro (when the world has an introTour) and during the
+   * explore phase (the stop's tour). The Scene stages `beat.shot`.
+   */
+  readonly beat: ActiveBeat | null;
   /** Stop ids the child has completed (≥1 star). */
   readonly completedStops: readonly string[];
   readonly explorer: { readonly name: string; readonly avatar: string };
@@ -157,6 +200,17 @@ export interface WorldCanvasConfig {
   readonly background: string;
   /** Bloom settings when the device is on the high tier. `false` disables bloom. */
   readonly bloom?: false | { readonly intensity: number; readonly luminanceThreshold: number };
+  /** Cinematic post-processing extras (applied according to the quality tier). */
+  readonly fx?: {
+    /** Subtle film grain. */
+    readonly grain?: boolean;
+    /** Allow chromatic-aberration pulses (boosts, impacts). */
+    readonly aberration?: boolean;
+    /** Vignette darkness 0–1 (default 0.55). */
+    readonly vignette?: number;
+    /** Tone-mapping look. Default 'aces'. */
+    readonly toneMapping?: 'aces' | 'agx' | 'neutral';
+  };
 }
 
 export interface WorldModule {
@@ -166,4 +220,10 @@ export interface WorldModule {
   readonly Scene: ComponentType<WorldRuntimeProps>;
   /** Optional DOM layer for task controls (sliders, thrust buttons, sorting…). Rendered above the canvas. */
   readonly Overlay?: ComponentType<WorldRuntimeProps>;
+  /**
+   * 'cinematic' (default): travel is an automatic flight; the shell auto-arrives after a safety timeout.
+   * 'piloted': the child flies the journey (a mini-game); no timeout — the shell offers an "Autopilot" skip,
+   * which simply moves the phase on to 'explore' (the Scene must then snap to the arrival state).
+   */
+  readonly travelMode?: 'cinematic' | 'piloted';
 }
