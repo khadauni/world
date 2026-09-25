@@ -107,7 +107,7 @@ test.describe('Inside the Human Heart', () => {
       await page.getByTestId('lab-pull-aorta').click();
       await page.getByTestId('lab-pull-pa').click();
       await expect(page.getByTestId('lab-place-aorta')).toBeVisible({ timeout: 15_000 });
-      await page.waitForTimeout(1200);
+      await page.waitForTimeout(3000);
       await page.screenshot({ path: info.outputPath('lab-exploded.png') });
       await page.getByTestId('lab-place-aorta').click();
       await page.getByTestId('lab-place-pa').click();

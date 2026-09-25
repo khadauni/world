@@ -2,7 +2,7 @@ import { useCursor } from '@react-three/drei';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AdditiveBlending, Color, Quaternion, ShaderMaterial, Vector3, type Group, type IUniform, type Plane } from 'three';
-import { squash, valveOpen } from '../logic/beat';
+import { squashH, squashV, valveOpen } from '../logic/beat';
 import { PARTS, type PartId, type ValveId } from '../logic/ids';
 import { VALVE_KIND } from '../logic/valves';
 import { beat } from '../store';
@@ -160,8 +160,10 @@ export function Heart({
     const dt = Math.min(dtRaw, 0.1);
     t.current += dt;
     const strength = control.beat * (reducedMotion ? 0.35 : 1);
-    const [vx, vy] = squash(beat.vent, 0.075 * strength);
-    const [ax, ay] = squash(beat.atria, 0.09 * strength);
+    const vx = squashH(beat.vent, 0.075 * strength);
+    const vy = squashV(beat.vent, 0.075 * strength);
+    const ax = squashH(beat.atria, 0.09 * strength);
+    const ay = squashV(beat.atria, 0.09 * strength);
     const arterial = 1 + Math.max(0, beat.vent) * 0.035 * strength;
     for (const id of PARTS) {
       const g = groups.current[id];

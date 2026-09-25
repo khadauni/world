@@ -31,6 +31,8 @@ const LAYOUT: Record<ValveId, { x: number; z: number; r: number }> = {
   aortic: { x: 0.04, z: 0.06, r: 0.44 },
   pulmonary: { x: 0.46, z: 1.28, r: 0.42 },
 };
+/** Reused emitter position for backflow drips (no per-emission allocations). */
+const DRIP_AT: [number, number, number] = [0, 0.2, 0];
 const SIDE: Record<ValveId, 'right' | 'left'> = { tricuspid: 'right', pulmonary: 'right', mitral: 'left', aortic: 'left' };
 
 const PLATE: readonly P2[] = [
@@ -158,7 +160,9 @@ export function ValvesSet({ phase, band, task, reducedMotion, quality, actions, 
         if (open.current[id].current > 0.3) continue;
         const l = LAYOUT[id];
         // Backflow squirts the wrong way through the leaky valve (drawn above the plate, where it's visible).
-        drips.current?.fire([l.x, 0.2, l.z], SIDE[id] === 'right' ? '#8f9bff' : '#ff7085', 6, 1.4);
+        DRIP_AT[0] = l.x;
+        DRIP_AT[2] = l.z;
+        drips.current?.fire(DRIP_AT, SIDE[id] === 'right' ? '#8f9bff' : '#ff7085', 6, 1.4);
       }
     }
     for (const id of VALVES) {

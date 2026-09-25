@@ -178,7 +178,7 @@ export function Scene(props: WorldRuntimeProps) {
       <Bokeh count={Math.round(46 * quality.particleScale)} radius={16} center={[0, 0, -6]} calm={reducedMotion} />
       <Set key={shown} {...props} arriving={phase === 'travel' && shown === stopId} onArrive={onArrive} />
       {/* Keyed with the set so it re-subscribes after it: tags are projected once everything has moved. */}
-      <LabelProjector key={shown} />
+      <LabelProjector key={`tags-${shown}`} />
       {!reducedMotion && <HeartIris radius={iris} />}
     </>
   );

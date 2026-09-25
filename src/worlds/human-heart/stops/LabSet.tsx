@@ -25,6 +25,9 @@ const TINY_ORDER: readonly PartId[] = ['aorta', 'pa', 'lv', 'ra', 'svc', 'rv', '
 const SHOT_CLOSE: Shot = { target: [0.05, 0.18, 0], dir: [0.12, 0.14, 1], fit: [4.6, 4.3] };
 const ENTRY: Shot = { target: [0, 0, 0], dir: [0.3, 0.3, 1], fit: [10, 9] };
 
+/** Reused emitter position (no per-emission allocations). */
+const SLOSH_AT: [number, number, number] = [0, 0, 0];
+
 /** Where a pulled vessel was attached: blood spills out there until it's back (heart space + colour). */
 const LEAK_AT: Partial<Record<PartId, { at: [number, number, number]; color: string }>> = {
   aorta: { at: [0.08, 0.78, 0.12], color: '#ff3450' },
@@ -213,7 +216,10 @@ export function LabSet({ phase, band, task, reducedMotion, quality, actions, arr
         }
         if (!isValve(id)) continue;
         const p = build.parts[id];
-        slosh.current?.fire([p.pivot[0], p.pivot[1], p.pivot[2] + 0.12], PART_SIDE[id] === 'right' ? '#5b72ff' : '#ff3450', 5, 0.9);
+        SLOSH_AT[0] = p.pivot[0];
+        SLOSH_AT[1] = p.pivot[1];
+        SLOSH_AT[2] = p.pivot[2] + 0.12;
+        slosh.current?.fire(SLOSH_AT, PART_SIDE[id] === 'right' ? '#5b72ff' : '#ff3450', 5, 0.9);
       }
     }
   });

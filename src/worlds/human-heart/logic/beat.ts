@@ -82,8 +82,17 @@ export function valveOpen(kind: ValveKind, phase: number): number {
  * then overshoots the other way while refilling. Returns [horizontal, vertical] scale.
  */
 export function squash(amount: number, strength: number): [number, number] {
-  const v = amount * strength;
-  return [1 + v * 0.45, 1 - v];
+  return [squashH(amount, strength), squashV(amount, strength)];
+}
+
+/** Horizontal part of `squash` — separate so per-frame code needn't allocate a tuple. */
+export function squashH(amount: number, strength: number): number {
+  return 1 + amount * strength * 0.45;
+}
+
+/** Vertical part of `squash`. */
+export function squashV(amount: number, strength: number): number {
+  return 1 - amount * strength;
 }
 
 /**
