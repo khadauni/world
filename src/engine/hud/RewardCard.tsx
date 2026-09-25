@@ -21,6 +21,7 @@ export function RewardCard({
   rate,
   onNext,
   onMap,
+  onReplay,
   seed,
 }: {
   stars: 1 | 2 | 3;
@@ -31,6 +32,7 @@ export function RewardCard({
   rate: number;
   onNext: () => void;
   onMap: () => void;
+  onReplay?: () => void;
   seed: number;
 }) {
   const options = CHEERS[stars];
@@ -62,6 +64,11 @@ export function RewardCard({
           <Button tone="paper" onClick={onMap} icon="🗺️">
             Map
           </Button>
+          {onReplay && (
+            <Button tone="paper" onClick={onReplay} icon="🎬">
+              Watch again
+            </Button>
+          )}
           <Button tone="leaf" size="l" onClick={onNext} data-autofocus data-testid="reward-next">
             {nextTitle ? `Next: ${nextTitle}` : 'Continue'} <span aria-hidden="true">➜</span>
           </Button>

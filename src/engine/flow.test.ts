@@ -42,6 +42,17 @@ describe('flowReducer', () => {
   });
 });
 
+describe('shortcuts', () => {
+  it('skips to the quiz from the tour or mission and replays tours from the reward', () => {
+    const explore = { ...initialFlow, phase: 'explore' as const, stopId: 'a' };
+    expect(flowReducer(explore, { type: 'SKIP_TO_QUIZ' }).phase).toBe('quiz');
+    expect(flowReducer({ ...explore, phase: 'task' }, { type: 'SKIP_TO_QUIZ' }).phase).toBe('quiz');
+    expect(flowReducer({ ...explore, phase: 'map' }, { type: 'SKIP_TO_QUIZ' }).phase).toBe('map');
+    const replay = flowReducer({ ...explore, phase: 'reward' }, { type: 'REPLAY_TOUR' });
+    expect(replay).toMatchObject({ phase: 'explore', stopId: 'a' });
+  });
+});
+
 describe('unlocking', () => {
   it('opens stops in order and keeps finished ones open', () => {
     expect([...unlockedStops(content, new Set())]).toEqual(['a']);

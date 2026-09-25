@@ -111,12 +111,23 @@ export function TaskBanner({
   );
 }
 
-export function TravelBanner({ label, onSkip }: { label: string; onSkip: () => void }) {
+export function TravelBanner({
+  label,
+  onSkip,
+  skipLabel,
+  skipDelayMs = 1500,
+}: {
+  label: string;
+  onSkip: () => void;
+  /** Text for the skip button (icon-only ⏩ when omitted). */
+  skipLabel?: string;
+  skipDelayMs?: number;
+}) {
   const [canSkip, setCanSkip] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setCanSkip(true), 1500);
+    const t = setTimeout(() => setCanSkip(true), skipDelayMs);
     return () => clearTimeout(t);
-  }, []);
+  }, [skipDelayMs]);
   return (
     <div className={styles.bannerWrap}>
       <m.div className={styles.banner} role="status" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
@@ -125,8 +136,8 @@ export function TravelBanner({ label, onSkip }: { label: string; onSkip: () => v
         </span>
         <span className={styles.bannerText}>{label}</span>
         {canSkip && (
-          <Button tone="ghost" size="s" onClick={onSkip} style={{ color: 'var(--paper-ink)' }} aria-label="Skip the flight" data-testid="travel-skip">
-            ⏩
+          <Button tone="ghost" size="s" onClick={onSkip} style={{ color: 'var(--paper-ink)' }} aria-label={skipLabel ?? 'Skip the flight'} data-testid="travel-skip">
+            {skipLabel ? `${skipLabel} ⏩` : '⏩'}
           </Button>
         )}
       </m.div>

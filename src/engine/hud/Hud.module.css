@@ -18,6 +18,8 @@
 
 /* ---------- top bar ---------- */
 .top {
+  position: relative;
+  z-index: 12;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -25,6 +27,7 @@
 .title {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -57,6 +60,8 @@
 
 /* ---------- banners ---------- */
 .bannerWrap {
+  position: relative;
+  z-index: 12;
   display: flex;
   justify-content: center;
   pointer-events: none !important;
@@ -472,6 +477,8 @@
 
 /* ---------- reward / finale ---------- */
 .center {
+  position: relative;
+  z-index: 12;
   height: 100%;
   display: grid;
   place-items: center;
@@ -527,4 +534,17 @@
   display: grid;
   place-items: center;
   font-size: clamp(6rem, 22vw, 14rem);
+}
+
+/* Phones: keep every top-bar control on screen — the world name gives way first. */
+@media (max-width: 520px) {
+  .top {
+    gap: 6px;
+  }
+  .title span:last-child {
+    display: none;
+  }
+  .pill {
+    padding: 6px 10px;
+  }
 }

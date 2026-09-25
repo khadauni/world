@@ -18,13 +18,18 @@ export type FlowEvent =
   | { type: 'QUIZ_DONE'; stars: 1 | 2 | 3 }
   | { type: 'CONTINUE'; allDone: boolean; badgeAlreadyEarned: boolean }
   | { type: 'TO_MAP' }
-  | { type: 'FINALE_DONE' };
+  | { type: 'FINALE_DONE' }
+  /** The child chose "Skip to quiz" during the tour or the mission. */
+  | { type: 'SKIP_TO_QUIZ' }
+  /** Watch this stop's tour again from the reward card. */
+  | { type: 'REPLAY_TOUR' };
 
 export const initialFlow: FlowState = { phase: 'intro', stopId: null, lastStars: 0, attempt: 0 };
 
 /**
  * The learning loop for every world:
- *   intro → map → travel → explore → (task) → quiz → reward → map … → finale
+ *   intro → map → travel → explore (guided tour) → (task) → quiz → reward → map … → finale
+ * with "skip to quiz" shortcuts from the tour and the mission.
  * Pure reducer so it is trivially testable and the same for every world.
  */
 export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
@@ -51,6 +56,10 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       return state.phase === 'intro' ? state : { ...state, phase: 'map', stopId: null };
     case 'FINALE_DONE':
       return state.phase === 'finale' ? { ...state, phase: 'map', stopId: null } : state;
+    case 'SKIP_TO_QUIZ':
+      return state.phase === 'explore' || state.phase === 'task' ? { ...state, phase: 'quiz' } : state;
+    case 'REPLAY_TOUR':
+      return state.phase === 'reward' && state.stopId ? { ...state, phase: 'explore', attempt: state.attempt + 1 } : state;
   }
 }
 

@@ -8,7 +8,7 @@ import { hasWebGL } from '@/core/quality';
 import { selectQuestions } from '@/core/quiz';
 import { countStars, useApp, useWorldRecord, type Profile } from '@/core/store';
 import { BANDS } from '@/core/tier';
-import type { Tiered, WorldActions, WorldModule, WorldRuntimeProps } from '@/core/types';
+import type { ActiveBeat, Tiered, WorldActions, WorldModule, WorldRuntimeProps } from '@/core/types';
 import { Confetti } from '@/ui/Confetti';
 import type { WorldMeta } from '@/worlds/registry';
 import { flowReducer, initialFlow, nextStopId, unlockedStops } from './flow';
@@ -16,12 +16,15 @@ import { TaskBanner, TravelBanner } from './hud/Banners';
 import { BreakReminder } from './hud/BreakReminder';
 import { Finale } from './hud/Finale';
 import { GuideBubble, type BubbleSlide } from './hud/GuideBubble';
+import { TourEndCard, TourPlayer } from './hud/TourPlayer';
+import { useTourPlayback } from './hud/useTourPlayback';
 import hud from './hud/Hud.module.css';
 import { QuizModal } from './hud/QuizModal';
 import { RewardCard } from './hud/RewardCard';
 import { StopTrack } from './hud/StopTrack';
 import { TopBar } from './hud/TopBar';
 import { fmt, fmtList } from './text';
+import { introTourFor, tourFor } from './tour';
 import { WorldCanvas } from './WorldCanvas';
 import { WorldErrorBoundary } from './WorldErrorBoundary';
 import styles from './WorldShell.module.css';
@@ -109,11 +112,14 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
     if (flow.phase === 'travel') playSfx('whoosh');
   }, [flow.phase, flow.stopId]);
 
+  const piloted = module.travelMode === 'piloted' && !sceneFailed;
   useEffect(() => {
     if (flow.phase !== 'travel') return;
+    // Piloted journeys are a game the child plays — never cut them off (they can press Autopilot instead).
+    if (piloted && !reducedMotion) return;
     const t = setTimeout(() => dispatch({ type: 'ARRIVED' }), sceneFailed || reducedMotion ? 700 : TRAVEL_TIMEOUT_MS);
     return () => clearTimeout(t);
-  }, [flow.phase, flow.stopId, sceneFailed, reducedMotion]);
+  }, [flow.phase, flow.stopId, sceneFailed, reducedMotion, piloted]);
 
   useEffect(() => {
     if (!toast) return;
@@ -147,16 +153,42 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
 
   // --- derived UI content -------------------------------------------------------
   const introSlides = useMemo<BubbleSlide[]>(() => fmtList(content.intro, band, name).map((text) => ({ kind: 'say', text })), [content.intro, band, name]);
-  const exploreSlides = useMemo<BubbleSlide[]>(
-    () =>
-      stop
-        ? [
-            ...fmtList(stop.narration, band, name).map((text) => ({ kind: 'say' as const, text })),
-            ...fmtList(stop.facts, band, name).map((text) => ({ kind: 'fact' as const, text })),
-          ]
-        : [],
-    [stop, band, name],
-  );
+  const tourVoice = settings.narration;
+  const introBeats = useMemo(() => introTourFor(content.introTour, band), [content.introTour, band]);
+  const stopBeats = useMemo(() => (stop ? tourFor(stop, band) : []), [stop, band]);
+  const introTour = useTourPlayback({
+    beats: introBeats,
+    active: flow.phase === 'intro' && introBeats.length > 0,
+    band,
+    name,
+    voice: tourVoice,
+    rate,
+    resetKey: 'intro',
+  });
+  const stopTour = useTourPlayback({
+    beats: stopBeats,
+    active: flow.phase === 'explore',
+    band,
+    name,
+    voice: tourVoice,
+    rate,
+    resetKey: `${flow.stopId ?? ''}:${flow.attempt}`,
+  });
+  // A finished intro tour rolls straight on to the map.
+  useEffect(() => {
+    if (flow.phase === 'intro' && introBeats.length > 0 && introTour.done) dispatch({ type: 'START' });
+  }, [flow.phase, introBeats.length, introTour.done]);
+
+  const activeBeat: ActiveBeat | null = useMemo(() => {
+    const pick = (beats: typeof stopBeats, pb: typeof stopTour): ActiveBeat | null => {
+      const b = beats[pb.index];
+      return b ? { id: b.id, shot: b.shot, index: pb.index, total: beats.length, playing: pb.playing && !pb.done } : null;
+    };
+    if (flow.phase === 'intro' && introBeats.length) return pick(introBeats, introTour);
+    if (flow.phase === 'explore') return pick(stopBeats, stopTour);
+    return null;
+  }, [flow.phase, introBeats, introTour, stopBeats, stopTour]);
+
   const questions = useMemo(() => (stop ? selectQuestions(stop, band, flow.attempt) : []), [stop, band, flow.attempt]);
 
   const onQuizDone = useCallback(
@@ -182,12 +214,12 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
       phase: flow.phase,
       stopId: flow.stopId,
       task: flow.phase === 'task' ? (stop?.task ?? null) : null,
-      beat: null,
+      beat: activeBeat,
       completedStops: completedList,
       explorer: { name, avatar: profile.avatar },
       actions,
     }),
-    [band, quality, reducedMotion, flow.phase, flow.stopId, stop, completedList, name, profile.avatar, actions],
+    [band, quality, reducedMotion, flow.phase, flow.stopId, stop, activeBeat, completedList, name, profile.avatar, actions],
   );
 
   const stopTitle = stop ? fmt(stop.title, band, name) : '';
@@ -229,7 +261,12 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
 
         <div className={hud.spacer} style={{ display: 'contents' }}>
           {flow.phase === 'travel' && stop && (
-            <TravelBanner label={`${band === 'tiny' ? 'Whoosh! Off to' : 'Travelling to'} ${stopTitle}…`} onSkip={() => dispatch({ type: 'ARRIVED' })} />
+            <TravelBanner
+              label={piloted ? `${band === 'tiny' ? 'Fly to' : 'Pilot your ship to'} ${stopTitle}!` : `${band === 'tiny' ? 'Whoosh! Off to' : 'Travelling to'} ${stopTitle}…`}
+              skipLabel={piloted ? 'Autopilot' : undefined}
+              skipDelayMs={piloted ? 3000 : 1500}
+              onSkip={() => dispatch({ type: 'ARRIVED' })}
+            />
           )}
           {flow.phase === 'task' && stop?.task && (
             <TaskBanner
@@ -248,6 +285,7 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
           )}
           {flow.phase !== 'travel' && flow.phase !== 'task' && <div />}
         </div>
+        {/* The guided tour lays itself out over the banner row (progress), centre (stat) and dock (captions). */}
 
         <div className={hud.spacer}>
           {flow.phase === 'reward' && stop && (
@@ -260,6 +298,7 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
               rate={rate}
               seed={flow.attempt}
               onMap={() => dispatch({ type: 'TO_MAP' })}
+              onReplay={() => dispatch({ type: 'REPLAY_TOUR' })}
               onNext={() => {
                 if (allDone && !record.badgeAt) dispatch({ type: 'CONTINUE', allDone, badgeAlreadyEarned: false });
                 else if (nextId) dispatch({ type: 'SELECT_STOP', stopId: nextId });
@@ -267,10 +306,42 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
               }}
             />
           )}
+          {flow.phase === 'explore' && stop && stopTour.done && (
+            <TourEndCard
+              title={stopTitle}
+              hasMission={!!stop.task && !sceneFailed}
+              reducedMotion={reducedMotion}
+              onMission={() => {
+                playSfx('unlock');
+                dispatch({ type: 'BEGIN_TASK', hasTask: true });
+              }}
+              onQuiz={() => {
+                playSfx('unlock');
+                dispatch({ type: 'SKIP_TO_QUIZ' });
+              }}
+              onReplay={stopTour.restart}
+            />
+          )}
         </div>
 
         <div className={hud.dock}>
-          {flow.phase === 'intro' && introSlides.length > 0 && (
+          {flow.phase === 'intro' && introBeats.length > 0 && (
+            <TourPlayer
+              beats={introBeats}
+              playback={introTour}
+              band={band}
+              name={name}
+              guide={content.guide}
+              kicker={meta.title}
+              accent={meta.palette.accent}
+              voice={tourVoice}
+              reducedMotion={reducedMotion}
+              skipLabel="Skip intro"
+              onSkip={() => dispatch({ type: 'START' })}
+            />
+          )}
+
+          {flow.phase === 'intro' && introBeats.length === 0 && introSlides.length > 0 && (
             <GuideBubble
               guide={content.guide}
               slide={introSlides[Math.min(slide, introSlides.length - 1)] as BubbleSlide}
@@ -321,29 +392,22 @@ export function WorldShell({ meta, module, profile }: { meta: WorldMeta; module:
             </>
           )}
 
-          {flow.phase === 'explore' && stop && exploreSlides.length > 0 && (
-            <GuideBubble
+          {flow.phase === 'explore' && stop && stopBeats.length > 0 && !stopTour.done && (
+            <TourPlayer
+              beats={stopBeats}
+              playback={stopTour}
+              band={band}
+              name={name}
               guide={content.guide}
-              slide={exploreSlides[Math.min(slide, exploreSlides.length - 1)] as BubbleSlide}
-              step={slide}
-              total={exploreSlides.length}
-              autoSpeak={autoSpeak}
-              rate={rate}
-              nextLabel={slide + 1 >= exploreSlides.length ? (stop.task ? 'Start mission' : 'Quiz time') : 'Next'}
-              nextIcon={slide + 1 >= exploreSlides.length ? (stop.task ? '🎯' : '❓') : '▶'}
-              onNext={() => {
-                if (slide + 1 >= exploreSlides.length) {
-                  playSfx('unlock');
-                  dispatch({ type: 'BEGIN_TASK', hasTask: !!stop.task && !sceneFailed });
-                } else setSlide((s) => s + 1);
+              kicker={stopTitle}
+              accent={stop.color}
+              voice={tourVoice}
+              reducedMotion={reducedMotion}
+              skipLabel="Skip to quiz"
+              onSkip={() => {
+                playSfx('unlock');
+                dispatch({ type: 'SKIP_TO_QUIZ' });
               }}
-              extraActions={
-                <button type="button" className={hud.iconBtn} aria-label="Back to the map" onClick={() => dispatch({ type: 'TO_MAP' })}>
-                  <span className="emoji" aria-hidden="true">
-                    🗺️
-                  </span>
-                </button>
-              }
             />
           )}
         </div>

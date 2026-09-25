@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createExplorer, skipTask, solveQuiz, watchPage } from './helpers';
+import { createExplorer, finishExplore, skipTask, skipTourToQuiz, solveQuiz, watchPage } from './helpers';
 
 test.describe('Wonderverse smoke', () => {
   test('onboarding → hub, with zero third-party requests and no CSP violations', async ({ page }, info) => {
@@ -24,6 +24,25 @@ test.describe('Wonderverse smoke', () => {
     expect(watch.problems.filter((p) => !/net::ERR_INTERNET_DISCONNECTED/.test(p))).toEqual([]);
   });
 
+  test('the guided tour can be skipped straight to the quiz', async ({ page }) => {
+    const watch = watchPage(page);
+    await createExplorer(page, 'Ravi', 8);
+    await page.getByTestId('world-solar-system').click();
+    const shell = page.getByTestId('world-shell');
+    await expect(shell).toBeVisible({ timeout: 30_000 });
+    for (let i = 0; i < 12 && (await shell.getAttribute('data-phase')) === 'intro'; i++) {
+      const skip = page.getByTestId('tour-skip');
+      if (await skip.isVisible().catch(() => false)) await skip.click();
+      else await page.getByTestId('guide-next').click();
+    }
+    await page.locator('[data-testid^="stop-"]:enabled').first().click();
+    await expect(shell).toHaveAttribute('data-phase', 'explore', { timeout: 30_000 });
+    await skipTourToQuiz(page);
+    await solveQuiz(page);
+    await expect(page.getByTestId('reward-card')).toBeVisible();
+    expect(watch.problems).toEqual([]);
+  });
+
   for (const worldId of ['solar-system', 'chandrayaan', 'human-heart']) {
     test(`${worldId}: intro → first stop → task → quiz → reward`, async ({ page }, info) => {
       test.slow();
@@ -35,9 +54,11 @@ test.describe('Wonderverse smoke', () => {
       await page.waitForTimeout(2500);
       await page.screenshot({ path: info.outputPath(`${worldId}-intro.png`) });
 
-      // Intro
+      // Intro (a cinematic tour or guide lines)
       for (let i = 0; i < 12 && (await page.getByTestId('world-shell').getAttribute('data-phase')) === 'intro'; i++) {
-        await page.getByTestId('guide-next').click();
+        const skip = page.getByTestId('tour-skip');
+        if (await skip.isVisible().catch(() => false)) await skip.click();
+        else await page.getByTestId('guide-next').click();
       }
       await expect(page.getByTestId('world-shell')).toHaveAttribute('data-phase', 'map');
       await page.screenshot({ path: info.outputPath(`${worldId}-map.png`) });
@@ -47,9 +68,8 @@ test.describe('Wonderverse smoke', () => {
       await expect(page.getByTestId('world-shell')).toHaveAttribute('data-phase', 'explore', { timeout: 20_000 });
       await page.waitForTimeout(800);
       await page.screenshot({ path: info.outputPath(`${worldId}-explore.png`) });
-      for (let i = 0; i < 20 && (await page.getByTestId('world-shell').getAttribute('data-phase')) === 'explore'; i++) {
-        await page.getByTestId('guide-next').click();
-      }
+      await expect(page.getByTestId('tour-player')).toBeVisible();
+      await finishExplore(page);
 
       const phase = await page.getByTestId('world-shell').getAttribute('data-phase');
       if (phase === 'task') {

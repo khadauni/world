@@ -53,7 +53,11 @@ export async function openWorldMap(page: Page, worldId: string) {
   await page.goto(`./#/world/${worldId}`);
   const shell = page.getByTestId('world-shell');
   await expect(shell).toBeVisible({ timeout: 30_000 });
-  for (let i = 0; i < 15 && (await shell.getAttribute('data-phase')) === 'intro'; i++) await page.getByTestId('guide-next').click();
+  for (let i = 0; i < 15 && (await shell.getAttribute('data-phase')) === 'intro'; i++) {
+    const skip = page.getByTestId('tour-skip');
+    if (await skip.isVisible().catch(() => false)) await skip.click();
+    else await page.getByTestId('guide-next').click();
+  }
   await expect(shell).toHaveAttribute('data-phase', 'map');
 }
 
@@ -63,10 +67,23 @@ export async function visitStop(page: Page, stopId: string) {
   await expect(page.getByTestId('world-shell')).toHaveAttribute('data-phase', 'explore', { timeout: 20_000 });
 }
 
-/** Click through narration/facts until the task (or quiz) starts. */
+/** Step through the guided tour to its end card, then start the mission (or the quiz when there is none). */
 export async function finishExplore(page: Page) {
-  const shell = page.getByTestId('world-shell');
-  for (let i = 0; i < 25 && (await shell.getAttribute('data-phase')) === 'explore'; i++) await page.getByTestId('guide-next').click();
+  const end = page.getByTestId('tour-end');
+  for (let i = 0; i < 40 && !(await end.isVisible().catch(() => false)); i++) {
+    await page.getByTestId('tour-next').click({ timeout: 5_000 }).catch(() => undefined);
+    await page.waitForTimeout(150);
+  }
+  await expect(end).toBeVisible();
+  const mission = page.getByTestId('start-mission');
+  if (await mission.isVisible().catch(() => false)) await mission.click();
+  else await page.getByTestId('start-quiz').click();
+}
+
+/** Take the "Skip to quiz" shortcut from the tour. */
+export async function skipTourToQuiz(page: Page) {
+  await page.getByTestId('tour-skip').click();
+  await expect(page.getByTestId('quiz-prompt')).toBeVisible();
 }
 
 export async function createExplorer(page: Page, name = 'Aarav', age = 7) {
